@@ -38,6 +38,7 @@ namespace NoCorpseHigherQuota
 
             _harmony.PatchAll(typeof(NoCorpseHigherQuota));
             _harmony.PatchAll(typeof(LeavingBodyPatch));
+            _harmony.PatchAll(typeof(ReportPatch));
 
 
         }

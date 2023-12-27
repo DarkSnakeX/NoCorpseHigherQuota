@@ -6,6 +6,9 @@ namespace NoCorpseHigherQuota.Patches;
 [HarmonyPatch(typeof(StartOfRound))]
 internal class LeavingBodyPatch
 {
+    
+    public static int num = 0;
+    public static int iter = 0;
 
     [HarmonyPatch("ShipHasLeft")]
     [HarmonyPostfix]
@@ -14,18 +17,19 @@ internal class LeavingBodyPatch
         
 
         int total = Math.Abs(__instance.livingPlayers - GameNetworkManager.Instance.connectedPlayers);
-        int num = 0;
 
 
         if (total != 0 && GetBodiesInShip() != total)
         {
-
-            for (int i = 0; i < total; i++)
+            num = 0;
+            iter = 0;
+            for (; iter < total; iter++)
             {
-                num = TimeOfDay.Instance.profitQuota += NoCorpseHigherQuota.configcost.Value;
+                TimeOfDay.Instance.profitQuota += NoCorpseHigherQuota.configcost.Value;
+                num += NoCorpseHigherQuota.configcost.Value;
             }
-            HUDManager.Instance.AddTextToChatOnServer("<color=yellow>Lost body/s</color> - <color=blue>The quota has increased by </color><color=red>" + num + "</color><color=blue> more.</color>");
-
+            /*HUDManager.Instance.AddTextToChatOnServer("<color=yellow>Lost body/s</color> - <color=blue>The quota has increased by </color><color=red>" + num + "</color><color=blue> more.</color>");*/
+            
         }
 
     }
