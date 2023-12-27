@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using NoCorpseHigherQuota.Patches;
@@ -13,6 +14,8 @@ namespace NoCorpseHigherQuota
         public static NoCorpseHigherQuota Instance;
 
         internal static ManualLogSource Mls;
+        
+        public static ConfigEntry<int> configcost;
 
 
 
@@ -22,6 +25,13 @@ namespace NoCorpseHigherQuota
             {
                 Instance = this;
             }
+            
+            configcost = Config.Bind(
+                "General",
+                "Priceperbody",
+                30,
+                "This value is the cost per body lost."
+            );
 
             Mls = BepInEx.Logging.Logger.CreateLogSource(PluginInfo.PLUGIN_GUID);
             Mls.LogInfo("NoCorpseHigherQuota is loaded - version " + PluginInfo.PLUGIN_VERSION);

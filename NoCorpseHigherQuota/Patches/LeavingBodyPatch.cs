@@ -12,8 +12,9 @@ internal class LeavingBodyPatch
     private static void CancelAnimation(StartOfRound __instance)
     {
         
-        
+
         int total = Math.Abs(__instance.livingPlayers - GameNetworkManager.Instance.connectedPlayers);
+        int num = 0;
 
 
         if (total != 0 && GetBodiesInShip() != total)
@@ -21,13 +22,16 @@ internal class LeavingBodyPatch
 
             for (int i = 0; i < total; i++)
             {
-                TimeOfDay.Instance.profitQuota += 30;
+                num = TimeOfDay.Instance.profitQuota += NoCorpseHigherQuota.configcost.Value;
             }
-
+            HUDManager.Instance.AddTextToChatOnServer("<color=yellow>Lost body/s</color> - <color=blue>The quota has increased by </color><color=red>" + num + "</color><color=blue> more.</color>");
 
         }
 
     }
+    
+    
+
 
     
     private static int GetBodiesInShip()
