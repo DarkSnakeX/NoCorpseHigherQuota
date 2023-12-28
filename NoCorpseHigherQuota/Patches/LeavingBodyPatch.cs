@@ -7,27 +7,35 @@ namespace NoCorpseHigherQuota.Patches;
 internal class LeavingBodyPatch
 {
     
-    public static int num = 0;
-    public static int iter = 0;
+    public static int Num;
+    public static int Iter;
 
     [HarmonyPatch("ShipHasLeft")]
     [HarmonyPostfix]
-    private static void CancelAnimation(StartOfRound __instance)
+    private static void SumQuota(StartOfRound __instance)
     {
-        
+        int days = __instance.gameStats.daysSpent+1;
+        int totaldead = Math.Abs(__instance.livingPlayers - GameNetworkManager.Instance.connectedPlayers);
+        int cuerposMuertosenNave = GetBodiesInShip();
 
-        int total = Math.Abs(__instance.livingPlayers - GameNetworkManager.Instance.connectedPlayers);
-
-
-        if (total != 0 && GetBodiesInShip() != total)
+        if (totaldead != 0 && cuerposMuertosenNave < totaldead)
         {
-            num = 0;
-            iter = 0;
-            for (; iter < total; iter++)
-            {
-                TimeOfDay.Instance.profitQuota += NoCorpseHigherQuota.configcost.Value;
-                num += NoCorpseHigherQuota.configcost.Value;
-            }
+            Num = 0;
+            Iter = 0;
+            
+                if (Config.Configdynamic.Value)
+                {
+                    Num = Math.Abs(days*5+totaldead*Config.Configcost.Value-cuerposMuertosenNave*(Config.Configcost.Value/2));
+                    TimeOfDay.Instance.profitQuota += Num;
+                }
+                else
+                {
+                    Num = Config.Configcost.Value;
+                    TimeOfDay.Instance.profitQuota += Num;
+                }
+            
+            
+            
             /*HUDManager.Instance.AddTextToChatOnServer("<color=yellow>Lost body/s</color> - <color=blue>The quota has increased by </color><color=red>" + num + "</color><color=blue> more.</color>");*/
             
         }
@@ -42,9 +50,9 @@ internal class LeavingBodyPatch
     {
         int num = 0;
         DeadBodyInfo[] array = UnityEngine.Object.FindObjectsOfType<DeadBodyInfo>();
-        for (int i = 0; i < array.Length; i++)
+        foreach (var t in array)
         {
-            if (array[i].isInShip)
+            if (t.isInShip)
             {
                 num++;
             }
