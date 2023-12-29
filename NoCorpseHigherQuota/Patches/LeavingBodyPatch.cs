@@ -18,7 +18,7 @@ internal class LeavingBodyPatch
         int totaldead = Math.Abs(__instance.livingPlayers - GameNetworkManager.Instance.connectedPlayers);
         int cuerposMuertosenNave = GetBodiesInShip();
 
-        if (totaldead != 0 && cuerposMuertosenNave < totaldead)
+        if (totaldead != 0 && cuerposMuertosenNave != totaldead)
         {
             Num = 0;
             Iter = 0;
@@ -30,8 +30,11 @@ internal class LeavingBodyPatch
                 }
                 else
                 {
-                    Num = Config.Configcost.Value;
-                    TimeOfDay.Instance.profitQuota += Num;
+                    for (; Iter < totaldead; Iter++)
+                    {
+                        TimeOfDay.Instance.profitQuota += Config.Configcost.Value;
+                        Num += Config.Configcost.Value;
+                    }
                 }
             
             
@@ -42,17 +45,15 @@ internal class LeavingBodyPatch
 
     }
     
-    
-
 
     
     private static int GetBodiesInShip()
     {
         int num = 0;
         DeadBodyInfo[] array = UnityEngine.Object.FindObjectsOfType<DeadBodyInfo>();
-        foreach (var t in array)
+        for (int i = 0; i < array.Length; i++)
         {
-            if (t.isInShip)
+            if (array[i].isInShip)
             {
                 num++;
             }
