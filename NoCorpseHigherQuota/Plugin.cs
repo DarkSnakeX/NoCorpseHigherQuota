@@ -1,6 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using GameNetcodeStuff;
 using HarmonyLib;
+using NoCorpseHigherQuota.Configs;
 using NoCorpseHigherQuota.Patches;
 
 namespace NoCorpseHigherQuota
@@ -15,8 +17,7 @@ namespace NoCorpseHigherQuota
         internal static ManualLogSource Mls;
         
         public static Config MyConfig { get; internal set; }
-
-
+        
 
         void Awake()
         {
@@ -33,11 +34,10 @@ namespace NoCorpseHigherQuota
             _harmony.PatchAll(typeof(NoCorpseHigherQuota));
             _harmony.PatchAll(typeof(LeavingBodyPatch));
             _harmony.PatchAll(typeof(ReportPatch));
+            _harmony.PatchAll(typeof(Config));
 
 
         }
-
-        
         
         
     }

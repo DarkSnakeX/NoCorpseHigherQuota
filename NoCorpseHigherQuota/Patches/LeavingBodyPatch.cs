@@ -1,5 +1,7 @@
 using System;
+using BepInEx.Logging;
 using HarmonyLib;
+using NoCorpseHigherQuota.Configs;
 
 namespace NoCorpseHigherQuota.Patches;
 
@@ -23,17 +25,17 @@ internal class LeavingBodyPatch
             Num = 0;
             Iter = 0;
             
-                if (Config.Configdynamic.Value)
+                if (Config.Instance.Configdynamic)
                 {
-                    Num = Math.Abs(days*5+totaldead*Config.Configcost.Value-cuerposMuertosenNave*(Config.Configcost.Value/2));
+                    Num = Math.Abs(days*5+totaldead*Config.Instance.Configcost-cuerposMuertosenNave*(Config.Instance.Configcost/2));
                     TimeOfDay.Instance.profitQuota += Num;
                 }
                 else
                 {
                     for (; Iter < totaldead; Iter++)
                     {
-                        TimeOfDay.Instance.profitQuota += Config.Configcost.Value;
-                        Num += Config.Configcost.Value;
+                        TimeOfDay.Instance.profitQuota += Config.Instance.Configcost;
+                        Num += Config.Instance.Configcost;
                     }
                 }
             
@@ -41,6 +43,10 @@ internal class LeavingBodyPatch
             
             /*HUDManager.Instance.AddTextToChatOnServer("<color=yellow>Lost body/s</color> - <color=blue>The quota has increased by </color><color=red>" + num + "</color><color=blue> more.</color>");*/
             
+        }
+        else
+        {
+            NoCorpseHigherQuota.Mls.LogMessage("No deaths :D");
         }
 
     }
