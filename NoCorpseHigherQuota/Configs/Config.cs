@@ -15,6 +15,8 @@ public class Config : SyncedInstance<Config>
     
     public bool Configdynamic { get; private set; }
     
+    public bool Confignewquota { get; private set; }
+    
     public Config(ConfigFile cfg)
     {
         
@@ -32,8 +34,16 @@ public class Config : SyncedInstance<Config>
             "Allow",
             true,
             "This allow/deny if you want to dynamically increase the quota per unrecovered body depending on how much days have passed. If False it will only count the unrecovered corpses."
-                    
         ).Value;
+        
+        Confignewquota = cfg.Bind(
+            "NewQuotaDependsOn",
+            "Allow",
+            false,
+            "When setting a new quota on deadline. If false the increase will NOT be counting on the increase on unrecovered bodies when recalculating."
+        ).Value;
+        
+        
     }
     
     public static void RequestSync() {
@@ -57,7 +67,8 @@ public class Config : SyncedInstance<Config>
             stream.WriteValueSafe(in value);
             stream.WriteBytesSafe(array);
 
-            MessageManager.SendNamedMessage("ModName_OnReceiveConfigSync", clientId, stream);
+            MessageManager.SendNamedMessage("ModName_OnReceiveConfigSync", clientId, stream,
+                NetworkDelivery.ReliableFragmentedSequenced);
         } catch(Exception e) {
             NoCorpseHigherQuota.Mls.LogInfo($"Error occurred syncing config with client: {clientId}\n{e}");
         }
@@ -104,6 +115,5 @@ public class Config : SyncedInstance<Config>
     public static void PlayerLeave() {
         Config.RevertSync();
     }
-    
     
 }

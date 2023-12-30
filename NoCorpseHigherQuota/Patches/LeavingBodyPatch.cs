@@ -1,5 +1,4 @@
 using System;
-using BepInEx.Logging;
 using HarmonyLib;
 using NoCorpseHigherQuota.Configs;
 
@@ -22,13 +21,12 @@ internal class LeavingBodyPatch
 
         if (totaldead != 0 && cuerposMuertosenNave != totaldead)
         {
-            Num = 0;
             Iter = 0;
             
                 if (Config.Instance.Configdynamic)
                 {
-                    Num = Math.Abs(days*5+totaldead*Config.Instance.Configcost-cuerposMuertosenNave*(Config.Instance.Configcost/2));
-                    TimeOfDay.Instance.profitQuota += Num;
+                    Num += Math.Abs(days*5+totaldead*Config.Instance.Configcost-cuerposMuertosenNave*(Config.Instance.Configcost/2));
+                    TimeOfDay.Instance.profitQuota += Math.Abs(days*5+totaldead*Config.Instance.Configcost-cuerposMuertosenNave*(Config.Instance.Configcost/2));
                 }
                 else
                 {

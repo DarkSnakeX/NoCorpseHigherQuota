@@ -35,6 +35,7 @@ namespace NoCorpseHigherQuota
             _harmony.PatchAll(typeof(LeavingBodyPatch));
             _harmony.PatchAll(typeof(ReportPatch));
             _harmony.PatchAll(typeof(Config));
+            _harmony.PatchAll(typeof(NewQuotaPatch));
 
 
         }
