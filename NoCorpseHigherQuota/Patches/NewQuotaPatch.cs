@@ -17,13 +17,6 @@ internal class NewQuotaPatch
         TimeOfDay.Instance.profitQuota -= LeavingBodyPatch.Num;
         LeavingBodyPatch.Num = 0;
     }
-
-/*
-    private static int GetNextNumber(int currentNumber)
-    {
-        double nextNumber = Math.Sqrt(Math.Pow(currentNumber, 2) + 9);
-        return (int)nextNumber;
-    }
-    */
+    
 
 }

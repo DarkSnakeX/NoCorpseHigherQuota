@@ -15,39 +15,39 @@ internal class LeavingBodyPatch
     [HarmonyPostfix]
     private static void SumQuota(StartOfRound __instance)
     {
-        int days = __instance.gameStats.daysSpent+1;
+        int days = __instance.gameStats.daysSpent + 1;
         int totaldead = Math.Abs(__instance.livingPlayers - GameNetworkManager.Instance.connectedPlayers);
         int cuerposMuertosenNave = GetBodiesInShip();
+        int baseQuota = TimeOfDay.Instance.profitQuota;
 
         if (totaldead != 0 && cuerposMuertosenNave != totaldead)
         {
             Iter = 0;
-            
-                if (Config.Instance.Configdynamic)
+            int quotaAdjustment;
+
+            if (Config.Instance.Configdynamic)
+            {
+                // Ajuste basado en la cuota actual y otros factores
+                quotaAdjustment = (days * 5 + totaldead * Config.Instance.Configcost - cuerposMuertosenNave * (Config.Instance.Configcost / 2)) * (TimeOfDay.Instance.profitQuota / baseQuota);
+                Num += Math.Abs(quotaAdjustment);
+                TimeOfDay.Instance.profitQuota += Math.Abs(quotaAdjustment);
+            }
+            else
+            {
+                // Ajuste fijo basado en el costo por jugador muerto
+                for (; Iter < totaldead; Iter++)
                 {
-                    Num += Math.Abs(days*5+totaldead*Config.Instance.Configcost-cuerposMuertosenNave*(Config.Instance.Configcost/2));
-                    TimeOfDay.Instance.profitQuota += Math.Abs(days*5+totaldead*Config.Instance.Configcost-cuerposMuertosenNave*(Config.Instance.Configcost/2));
+                    TimeOfDay.Instance.profitQuota += Config.Instance.Configcost;
+                    Num += Config.Instance.Configcost;
                 }
-                else
-                {
-                    for (; Iter < totaldead; Iter++)
-                    {
-                        TimeOfDay.Instance.profitQuota += Config.Instance.Configcost;
-                        Num += Config.Instance.Configcost;
-                    }
-                }
-            
-            
-            
-            /*HUDManager.Instance.AddTextToChatOnServer("<color=yellow>Lost body/s</color> - <color=blue>The quota has increased by </color><color=red>" + num + "</color><color=blue> more.</color>");*/
-            
+            }
         }
         else
         {
             NoCorpseHigherQuota.Mls.LogMessage("No deaths :D");
         }
-
     }
+
     
 
     
